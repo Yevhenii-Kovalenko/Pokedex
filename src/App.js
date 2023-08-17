@@ -1,7 +1,7 @@
 /* eslint-disable import/order */
 import React, { useState, useEffect } from 'react';
 
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import axios from 'axios';
 
 import Header from './components/Header';
@@ -19,6 +19,7 @@ function App() {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   const itemsPerPage = 10;
 
@@ -47,8 +48,10 @@ function App() {
         );
         setPokemons(fetchedPokemons);
         setTotalPages(Math.ceil(response.data.count / itemsPerPage));
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
+        setIsLoading(false);
       }
     };
 
@@ -79,17 +82,27 @@ function App() {
       sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative' }}
     >
       <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <TypeFilter
-        types={pokemonTypes}
-        selectedTypes={selectedTypes}
-        onTypeSelect={handleTypeSelect}
-      />
-      <PokemonList pokemons={filteredPokemons} searchTerm={searchTerm} />
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      {isLoading ? (
+        <Box
+          sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <TypeFilter
+            types={pokemonTypes}
+            selectedTypes={selectedTypes}
+            onTypeSelect={handleTypeSelect}
+          />
+          <PokemonList pokemons={filteredPokemons} searchTerm={searchTerm} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
+      )}
     </Box>
   );
 }

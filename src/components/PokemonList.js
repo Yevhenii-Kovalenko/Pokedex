@@ -7,6 +7,7 @@ import PokemonCard from './PokemonCard';
 function PokemonList({ pokemons, searchTerm }) {
   return (
     <Grid container spacing={2} sx={{ margin: '20px 0px 100px 0px', flex: '1' }}>
+
       {pokemons.length === 0 ? (
         <Typography
           sx={{ margin: '0 auto' }}
